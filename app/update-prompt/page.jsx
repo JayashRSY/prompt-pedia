@@ -2,6 +2,7 @@
 
 import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 
 import Form from "@components/Form";
 
@@ -10,64 +11,64 @@ const UpdatePrompt = () => {
   const searchParams = useSearchParams();
   const promptId = searchParams.get("id");
 
-  const UpdatePromptContent = () => {
-    const [post, setPost] = useState({ prompt: "", tag: "" });
-    const [submitting, setIsSubmitting] = useState(false);
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <UpdatePromptContent promptId={promptId} />
+    </Suspense>
+  );
+};
 
-    useEffect(() => {
-      const getPromptDetails = async () => {
-        const response = await fetch(`/api/prompt/${promptId}`);
-        const data = await response.json();
+const UpdatePromptContent = ({ promptId }) => {
+  const [post, setPost] = useState({ prompt: "", tag: "" });
+  const [submitting, setIsSubmitting] = useState(false);
 
-        setPost({
-          prompt: data.prompt,
-          tag: data.tag,
-        });
-      };
+  useEffect(() => {
+    const getPromptDetails = async () => {
+      const response = await fetch(`/api/prompt/${promptId}`);
+      const data = await response.json();
 
-      if (promptId) getPromptDetails();
-    }, [promptId]);
-
-    const updatePrompt = async (e) => {
-      e.preventDefault();
-      setIsSubmitting(true);
-
-      if (!promptId) return alert("Missing PromptId!");
-
-      try {
-        const response = await fetch(`/api/prompt/${promptId}`, {
-          method: "PATCH",
-          body: JSON.stringify({
-            prompt: post.prompt,
-            tag: post.tag,
-          }),
-        });
-
-        if (response.ok) {
-          router.push("/");
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsSubmitting(false);
-      }
+      setPost({
+        prompt: data.prompt,
+        tag: data.tag,
+      });
     };
 
-    return (
-      <Form
-        type="Edit"
-        post={post}
-        setPost={setPost}
-        submitting={submitting}
-        handleSubmit={updatePrompt}
-      />
-    );
+    if (promptId) getPromptDetails();
+  }, [promptId]);
+
+  const updatePrompt = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    if (!promptId) return alert("Missing PromptId!");
+
+    try {
+      const response = await fetch(`/api/prompt/${promptId}`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          prompt: post.prompt,
+          tag: post.tag,
+        }),
+      });
+
+      if (response.ok) {
+        router.push("/");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <UpdatePromptContent />
-    </Suspense>
+    <Form
+      type="Edit"
+      post={post}
+      setPost={setPost}
+      submitting={submitting}
+      handleSubmit={updatePrompt}
+    />
   );
 };
 

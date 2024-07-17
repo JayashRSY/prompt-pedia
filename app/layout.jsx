@@ -1,19 +1,28 @@
-import '@/styles/globals.css';
+import "@styles/globals.css";
+
+import Nav from "@components/Nav";
+import Provider from "@components/Provider";
 
 export const metadata = {
   title: "Prompt Pedia",
   description: "Discover & Share AI Prompts",
 };
-const RootLayout = ({ children }) => {
-  return (
-    <html Lan="en">
-      <body>
-        <div className="main">
-          <div className="gradient"></div>
+
+const RootLayout = ({ children }) => (
+  <html lang='en'>
+    <body>
+      <Provider>
+        <div className='main'>
+          <div className='gradient' />
         </div>
-        <div className="app">{children}</div>
-      </body>
-    </html>
-  );
-};
+
+        <main className='app'>
+          <Nav />
+          {children}
+        </main>
+      </Provider>
+    </body>
+  </html>
+);
+
 export default RootLayout;

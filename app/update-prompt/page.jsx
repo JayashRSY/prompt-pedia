@@ -1,11 +1,11 @@
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 
-const UpdatePrompt = dynamic(() => import("@components/EditPrompt"), {
+const EditPrompt = dynamic(() => import("@components/EditPrompt"), {
   suspense: true,
 });
 
-const Page = () => {
+const UpdatePrompt = () => {
   return (
     <Suspense>
       <EditPrompt />
